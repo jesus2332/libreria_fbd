@@ -1,70 +1,55 @@
-const  http =   require ( 'http' ) ;
+const http = require('http');
 const fs = require('fs');
 
-// HTTP => (request, response)
+http.createServer((request, response) => {
+  const file = request.url === '/' ? './WWW/index.html' : `./WWW${request.url}`;
 
-http.createServer((request, response)=>{
-    const file = request.url == '/' ? './WWW/index.html' : `./WWW${request.url}`;
-    console.log("Conexion ");
-   
+  console.log("Conexión");
 
-    if(request.url == "/login"){
-        let data = [];
-        request.on("data", value => {
-            data.push(value);
+  if (request.url === "/login") {
+    let data = [];
+    request.on("data", value => {
+      data.push(value);
+    }).on("end", () => {    
+      let params = Buffer.concat(data).toString();
+      console.log(params);
+      response.end();
+    });
+  } else {
+    fs.readFile(file, (err, data) => {
+      if (err) {
+        response.writeHead(404, {"Content-Type": "text/plain"});
+        response.write("404 Not Found");
+        response.end();
+      } else {
+        let contentType = "text/html";
 
-        }).on("end", () => {    
-            let params =Buffer.concat(data).toString();
-            console.log(params);
-            response.end();
-        })
-    }
-    
-    //const data = fs.readFileSync('./WWW/index.html');
-    fs.readFile(file, (err, data)=>{
-        if(err){
-            response.writeHead(404, {"Content-Type": "text/plain"});
-            response.write("404 Not Found");
-            response.end();
+        const extension = file.split('.').pop();
+        switch (extension) {
+          case "txt":
+            contentType = "text/plain";
+            break;
+          case "html":
+            contentType = "text/html";
+            break;
+          case "css":
+            contentType = "text/css";
+            break;
+          case "ico":
+            contentType = "image/x-icon";
+            break;
+          case "js":
+            contentType = "text/javascript";
+            break;
+          case "jpeg":
+            contentType = "image/jpeg";
+            break;
         }
-        else{
-            
-            const extension = request.url.split('.').pop
-            switch (extension) {
-                case "txt":
-                    response.writeHead(200, {"Content-Type": "text/plain"});
-                    response.write(data);
-                    response.end();
-                    break;
-                case "html":
-                    response.writeHead(200, {"Content-Type": "text/html"});
-                    break;
-                case "css":
-                    response.writeHead(200, {"Content-Type": "text/css"});
-                    break;
-                case "ico":
-                    response.writeHead(200, {"Content-Type": "image/x-icon"})
-                    break;
-                case "js":
-                    response.writeHead(200, {"Content-Type": "text/javascript"})
-                    break;
-                case "jpeg":
-                    response.writeHead(200, {"Content-Type": "image/jpeg"})
 
-                default:
-                    response.writeHead(200, {"Content-Type": "text/html"});
-                    break;
-            }
-            
-            response.write(data);
-            response.end();
-    
-
-        }
-       
-
-    })
-    
+        response.writeHead(200, {"Content-Type": contentType});
+        response.write(data);
+        response.end();
+      }
+    });
+  }
 }).listen(4444);
-
-
