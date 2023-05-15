@@ -1,0 +1,92 @@
+
+#side-bar{
+    background-color: #FFF8E1;
+    position: relative;
+    height:130vh;   
+
+    
+}
+
+#teal-page{
+    background-color: #FFFBED;
+    height: 130vh;
+
+}
+
+#icons{
+    display: flex;
+    justify-content: space-around;
+    padding: 12% 2%;
+
+}
+
+#icon{
+    border-radius: 5%;
+}
+
+ion-icon{
+    font-size: 48px;
+    /* agregar sombra circular*/
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);
+    border-radius: 50%;
+}
+
+#logo img{
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+
+#category{
+    
+}
+#category h5{
+    padding-left: 5%;
+    font-family: 'Amiri';
+
+}
+
+#category-items{
+    padding-left: 10%;
+
+
+}
+/* Cambia el color de los input radio de materialize
+[type="radio"]:checked+span:after, [type="radio"].with-gap:checked+span:before, [type="radio"].with-gap:checked+span:after {
+    border: 2px solid #eeee29;
+    background-color: #FFB74D;
+
+
+
+} */
+
+
+/* quitar el color de a*/
+a{
+    color: black;
+}
+
+#title-box{
+    font-family: "Allura";
+    text-align: center;
+    padding-top: 10%;
+    
+}
+
+#title-box h1{
+    font-size: 128px;
+
+}
+.card-content h6{
+    padding: 0;
+    margin: 0;
+    text-align: center;
+   
+}
+
+#card-gallery img{
+
+}
