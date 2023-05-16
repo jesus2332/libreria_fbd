@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Allura&family=Amiri&display=swap');
+
 
 #side-bar{
     background-color: #FFF8E1;
@@ -87,6 +89,52 @@ a{
    
 }
 
-#card-gallery img{
+.logo-container img{
 
+    width: 15%;
+
+
+}
+
+.general-container{
+    background: #FFFBED;
+}
+.general-container h2{
+    font-family: "Allura";
+    text-align: center;
+    font-size: 4.5rem;
+    padding: 0;
+    margin: 0;
+}
+
+.login-container{
+    background: #FFF8E1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);
+
+}
+
+
+h3{
+    font-family: 'Amiri';
+}
+#login-form{
+    padding-bottom: 10%;
+    padding-top: 10%;
+}
+#login-form button{
+    margin-top: 5%;
+    margin-bottom: 5%;
+}
+#login-form input{
+    margin-bottom: 5%;
+
+}
+
+/*cambiar el relleno  de los input text*/  
+input[type=text]:focus:not([readonly]), textarea.materialize-textarea:focus:not([readonly]){
+    border-bottom: 1px solid #FFB74D;
+    box-shadow: 0 1px 0 0 #FFB74D;
 }
