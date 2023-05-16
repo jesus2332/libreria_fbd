@@ -31,6 +31,7 @@ ion-icon{
     /* agregar sombra circular*/
     box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);
     border-radius: 50%;
+
 }
 
 #logo img{
@@ -96,6 +97,13 @@ a{
 
 }
 
+.logo-container2 img{
+
+    width: 100%;
+
+
+}
+
 .general-container{
     background: #FFFBED;
 }
@@ -137,4 +145,40 @@ h3{
 input[type=text]:focus:not([readonly]), textarea.materialize-textarea:focus:not([readonly]){
     border-bottom: 1px solid #FFB74D;
     box-shadow: 0 1px 0 0 #FFB74D;
+}
+
+
+.error-container{
+    background-color: #FFF8E1;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    margin: 25% 15%;
+    align-items: center;
+   
+  
+
+   
+}
+
+#sad-icon {
+    font-size: 96px;
+    box-shadow: none;
+}
+
+.error-container h3{
+    font-family: 'Amiri';
+    font-weight: 700;
+    font-size: 2rem;
+    padding-left: 8%;
+    padding-right: 8%;
+    text-align: center;
+    line-height: 3rem;
+}
+#return-button{
+
+    margin-bottom: 5%;
+}
+
+.order-text{
+    padding-top: 8%;
+    padding-left: 32.5%;
 }
