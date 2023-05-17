@@ -1,55 +1,84 @@
-const http = require('http');
 const fs = require('fs');
+const oracledb = require('oracledb');
+const express = require('express');
+const app = express();
 
-http.createServer((request, response) => {
-  const file = request.url === '/' ? './WWW/index.html' : `./WWW${request.url}`;
+const dbConfig = {
+  user: 'PROYECTOFINAL',
+  password: 'HOLA',
+  connectString: 'localhost:1521/xepdb1'
+};
 
-  console.log("Conexión");
+const templateFile = './WWW/result.html';
 
-  if (request.url === "/login") {
-    let data = [];
-    request.on("data", value => {
-      data.push(value);
-    }).on("end", () => {    
-      let params = Buffer.concat(data).toString();
-      console.log(params);
-      response.end();
-    });
-  } else {
-    fs.readFile(file, (err, data) => {
-      if (err) {
-        response.writeHead(404, {"Content-Type": "text/plain"});
-        response.write("404 Not Found");
-        response.end();
-      } else {
-        let contentType = "text/html";
+async function getData() {
+  let connection;
 
-        const extension = file.split('.').pop();
-        switch (extension) {
-          case "txt":
-            contentType = "text/plain";
-            break;
-          case "html":
-            contentType = "text/html";
-            break;
-          case "css":
-            contentType = "text/css";
-            break;
-          case "ico":
-            contentType = "image/x-icon";
-            break;
-          case "js":
-            contentType = "text/javascript";
-            break;
-          case "jpeg":
-            contentType = "image/jpeg";
-            break;
-        }
-
-        response.writeHead(200, {"Content-Type": contentType});
-        response.write(data);
-        response.end();
+  try {
+    connection = await oracledb.getConnection(dbConfig);
+    const result = await connection.execute('SELECT * FROM autor');
+    return result.rows;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  } finally {
+    if (connection) {
+      try {
+        await connection.close();
+      } catch (error) {
+        console.error(error);
       }
-    });
+    }
   }
-}).listen(4444);
+}
+
+function generateRowsHTML(data) {
+  return data
+    .map(
+      row => `
+        <tr>
+          <td>${row[0]}</td>
+          <td>${row[1]}</td>
+          <td>${row[2]}</td>
+          <td>${row[3]}</td>
+          <!-- Agrega aquí las columnas adicionales -->
+        </tr>
+      `
+    )
+    .join('');
+}
+
+app.get('/data', async (req, res) => {
+  try {
+    const data = await getData();
+    fs.readFile(templateFile, 'utf8', (err, template) => {
+      if (err) {
+        res.status(500).send('Error reading template file.');
+        return;
+      }
+
+      const renderedHTML = template.replace(
+        '<!-- Aquí se generarán las filas de la tabla con los datos -->',
+        generateRowsHTML(data)
+      );
+
+      res.writeHead(200, { 'Content-Type': 'text/html' });
+      res.write(renderedHTML);
+      res.end();
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error retrieving data from Oracle DB.');
+  }
+});
+
+app.use(express.static('WWW'));
+
+app.use((req, res) => {
+  res.status(404).sendFile('./WWW/404error.html', { root: __dirname });
+});
+
+
+app.listen(8888, () => {
+  console.log('Servidor escuchando en el puerto 8888');
+});
