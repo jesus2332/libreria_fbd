@@ -49,14 +49,26 @@ ion-icon{
 #category h5{
     padding-left: 5%;
     font-family: 'Amiri';
+    font-size: 2.2rem;
+    padding-bottom: 4%;
+    
 
 }
 
 #category-items{
     padding-left: 10%;
-
-
 }
+
+#category-items p{
+    padding-bottom: 5%;
+}
+#category-items span{
+    font-size: 1.6rem;
+    font-family: 'Amiri';
+    color: black;
+}
+
+
 /* Cambia el color de los input radio de materialize
 [type="radio"]:checked+span:after, [type="radio"].with-gap:checked+span:before, [type="radio"].with-gap:checked+span:after {
     border: 2px solid #eeee29;
@@ -98,9 +110,10 @@ a{
 }
 
 .logo-container2 img{
-
+    position: relative;
     width: 100%;
 
+    left: -20%;
 
 }
 
@@ -182,3 +195,22 @@ input[type=text]:focus:not([readonly]), textarea.materialize-textarea:focus:not(
     padding-top: 8%;
     padding-left: 32.5%;
 }
+
+
+.book-container{
+    /*Mover el contenedor hacia arriba*/
+    margin-top: -12%;
+}
+.book-container h3{
+    font-weight: 500;
+    font-size: 3.8rem;
+}
+.book-container h5{
+    font-family: 'Amiri';
+    line-height: 5.5vh;
+    font-weight: 600;
+    font-size: 2.1rem;
+}
+
+
+ /*Hacer el button mas grande*/
