@@ -49,7 +49,7 @@
 
             <div class="input-field col s12">
                 <i class="material-icons prefix">search</i>
-                <input id="icon_prefix" type="text">
+                <input id="search-input" type="text" oninput="searchBooks()">
                 <label for="icon_prefix">Search</label>
 
             </div>
@@ -60,13 +60,13 @@
                     <form action="#">
                         <p>
                             <label>
-                              <input name="group1" type="radio" class="with-gap" >
+                              <input name="group1" type="radio" class="with-gap " >
                               <span>Arte</span>
                             </label>
                         </p>
                           <p>
                             <label>
-                              <input name="group1" type="radio" class="with-gap" />
+                              <input name="group1" type="radio" class="with-gap"  />
                               <span>Aventura</span>
                             </label>
                           </p>
@@ -110,12 +110,8 @@
 
                      
                 </div>
-
                 
-
             </div>
-            
-
             
             
         </div>
@@ -129,44 +125,12 @@
 
             <div class="container" id="card-gallery" data-api-url="/data">
                 
-
-
-
-
-         
-          
-
-    
-
-                
-                
-                
-
-
             </div>
-
-
-
-
-
-
-
-
- 
-                
-                
-                
-
-
-
-
-
                 
           </div>
  
-
-
     </div>
+
    
     <script>
         fetch(document.getElementById('card-gallery').dataset.apiUrl)
@@ -177,6 +141,8 @@
           })
           .catch(error => console.error(error));
     </script>
+
+    <script src="js/main.js"></script>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 
