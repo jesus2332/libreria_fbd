@@ -4,14 +4,16 @@
 #side-bar{
     background-color: #FFF8E1;
     position: relative;
-    height:130vh;   
+    height: 160vh; 
+
 
     
 }
 
 #teal-page{
     background-color: #FFFBED;
-    height: 130vh;
+    height:100vh;  
+    /*cambiar */
 
 }
 
@@ -28,7 +30,6 @@
 
 ion-icon{
     font-size: 48px;
-    /* agregar sombra circular*/
     box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);
     border-radius: 50%;
 
@@ -39,13 +40,15 @@ ion-icon{
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 100%;
+    width: 95%;
 }
+
 
 
 #category{
     
 }
+
 #category h5{
     padding-left: 5%;
     font-family: 'Amiri';
@@ -95,16 +98,43 @@ a{
     font-size: 128px;
 
 }
-.card-content h6{
-    padding: 0;
-    margin: 0;
-    text-align: center;
-   
+
+
+
+.card-content{
+    height: 18vh;
+    overflow: hidden;
 }
 
+.card-index-image img{
+    object-fit: cover;
+    height: 300px; /* Ajusta la altura deseada */
+
+}
+
+
+.card-title{
+    padding-top: 0;
+    margin-top: 0;
+
+}
+
+
+
+
+
+
+
+
+
 .logo-container img{
+    /* hacer el icono a la izquierda */
+    position: relative;
+    left: -2%;
 
     width: 15%;
+
+
 
 
 }

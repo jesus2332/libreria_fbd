@@ -127,154 +127,20 @@
                 <h1>Biblioteca FCM</h1>
             </div>
 
-            <div class="container" id="card-gallery">
-
-                <div class="row">
-                    <div class="col s3">
-                        <div class="card hoverable ">
-                            <div class="card-image valign-wrapper">
-                              <img src="https://covers.openlibrary.org/b/isbn/9788499899688-L.jpg ">
-                              <a href="bookPage.html" class="btn-floating halfway-fab left waves-effect waves-light orange" style="left: 40%;"><i class="material-icons">add</i></a>
-                            </div>
-                            <div class="card-content" id="card-title">
-                              <h6>The pale king</h6>
-                            </div>
-                            
-                            
-
-                        </div>
-                    </div>
-
-
-                    <div class="col s3">
-                        <div class="card hoverable ">
-                            <div class="card-image valign-wrapper">
-                              <img src="https://covers.openlibrary.org/b/isbn/9788499899688-L.jpg ">
-                              <a class="btn-floating halfway-fab left waves-effect waves-light orange" style="left: 40%;"><i class="material-icons">add</i></a>
-                            </div>
-                            <div class="card-content" id="card-title">
-                              <h6>The pale king</h6>
-                            </div>
-                            
-                            
-
-                        </div>
-                    </div>
-
-                    <div class="col s3">
-                        <div class="card hoverable ">
-                            <div class="card-image valign-wrapper">
-                              <img src="https://covers.openlibrary.org/b/isbn/9788499899688-L.jpg ">
-                              <a class="btn-floating halfway-fab left waves-effect waves-light orange" style="left: 40%;"><i class="material-icons">add</i></a>
-                            </div>
-                            <div class="card-content" id="card-title">
-                              <h6>The pale king</h6>
-                            </div>
-                            
-                            
-
-                        </div>
-                    </div>
-
-                    <div class="col s3">
-                        <div class="card hoverable ">
-                            <div class="card-image valign-wrapper">
-                              <img src="https://covers.openlibrary.org/b/isbn/9788499899688-L.jpg ">
-                              <a class="btn-floating halfway-fab left waves-effect waves-light orange" style="left: 40%;"><i class="material-icons">add</i></a>
-                            </div>
-                            <div class="card-content" id="card-title">
-                              <h6>The pale king</h6>
-                            </div>
-                            
-                            
-
-                        </div>
-                    </div>
-
-                    
-
-
-
-
-
-                </div>
-                <div class="row">
-                    <div class="col s3">
-                        <div class="card hoverable ">
-                            <div class="card-image valign-wrapper">
-                              <img src="https://covers.openlibrary.org/b/isbn/9788499899688-L.jpg ">
-                              <a class="btn-floating halfway-fab left waves-effect waves-light orange" style="left: 40%;"><i class="material-icons">add</i></a>
-                            </div>
-                            <div class="card-content" id="card-title">
-                              <h6>The pale king</h6>
-                            </div>
-                            
-                            
-
-                        </div>
-                    </div>
-
-
-                    <div class="col s3">
-                        <div class="card hoverable ">
-                            <div class="card-image valign-wrapper">
-                              <img src="https://covers.openlibrary.org/b/isbn/9788499899688-L.jpg ">
-                              <a class="btn-floating halfway-fab left waves-effect waves-light orange" style="left: 40%;"><i class="material-icons">add</i></a>
-                            </div>
-                            <div class="card-content" id="card-title">
-                              <h6>The pale king</h6>
-                            </div>
-                            
-                            
-
-                        </div>
-                    </div>
-
-                    <div class="col s3">
-                        <div class="card hoverable ">
-                            <div class="card-image valign-wrapper">
-                              <img src="https://covers.openlibrary.org/b/isbn/9788499899688-L.jpg ">
-                              <a class="btn-floating halfway-fab left waves-effect waves-light orange" style="left: 40%;"><i class="material-icons">add</i></a>
-                            </div>
-                            <div class="card-content" id="card-title">
-                              <h6>The pale king</h6>
-                            </div>
-                            
-                            
-
-                        </div>
-                    </div>
-
-                    <div class="col s3">
-                        <div class="card hoverable ">
-                            <div class="card-image valign-wrapper">
-                              <img src="https://covers.openlibrary.org/b/isbn/9788499899688-L.jpg ">
-                              <a class="btn-floating halfway-fab left waves-effect waves-light orange" style="left: 40%;"><i class="material-icons">add</i></a>
-                            </div>
-                            <div class="card-content" id="card-title">
-                              <h6>The pale king</h6>
-                            </div>
-                            
-                            
-
-                        </div>
-                    </div>
-
-                    
-
-
-
-
-
-                </div>
-
-
-
-
+            <div class="container" id="card-gallery" data-api-url="/data">
                 
 
 
 
+
+         
+          
+
+    
+
+                
+                
+                
 
 
             </div>
@@ -286,7 +152,7 @@
 
 
 
-        </div>
+ 
                 
                 
                 
@@ -296,13 +162,21 @@
 
 
                 
-            </div>
-        </div>
+          </div>
+ 
 
 
     </div>
    
-
+    <script>
+        fetch(document.getElementById('card-gallery').dataset.apiUrl)
+          .then(response => response.text())
+          .then(data => {
+            const cardGallery = document.getElementById('card-gallery');
+            cardGallery.innerHTML = data;
+          })
+          .catch(error => console.error(error));
+    </script>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 

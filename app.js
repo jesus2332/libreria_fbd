@@ -16,7 +16,7 @@ async function getData() {
 
   try {
     connection = await oracledb.getConnection(dbConfig);
-    const result = await connection.execute('SELECT * FROM autor');
+    const result = await connection.execute('SELECT * FROM libro');
     return result.rows;
   } catch (error) {
     console.error(error);
@@ -36,16 +36,22 @@ function generateRowsHTML(data) {
   return data
     .map(
       row => `
-        <tr>
-          <td>${row[0]}</td>
-          <td>${row[1]}</td>
-          <td>${row[2]}</td>
-          <td>${row[3]}</td>
-          <!-- Agrega aquí las columnas adicionales -->
-        </tr>
-      `
-    )
-    .join('');
+    <div class="col s3">
+          <div class="card-wrapper">
+              <div class="card hoverable card-element">
+                  <div class="card-image valign-wrapper card-index-image">
+                    <img src="https://covers.openlibrary.org/b/isbn/${row[0]}-L.jpg ">
+                    <a href="bookPage.html" class="btn-floating halfway-fab left waves-effect waves-light orange" style="left: 40%;"><i class="material-icons">add</i></a>
+                  </div>
+                  <div class="card-content center" id="card-title">
+                    <h6>${decodeURIComponent(escape(row[1]))}</h6>
+                  </div>
+              </div>
+         </div>
+
+  </div>
+    `
+    ).join('');
 }
 
 app.get('/data', async (req, res) => {
