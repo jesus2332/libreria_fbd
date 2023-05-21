@@ -38,8 +38,8 @@
             <div class="container">
                 <div class="card z-depth-5">
                     <div class="card-image">
-                      <img src="https://covers.openlibrary.org/b/isbn/9788499899688-L.jpg">
-                        <span class="card-title ">1992</span>
+                      <img src="">
+                        <span class="card-title "></span>
                     </div>             
                 </div>  
             </div>
@@ -56,34 +56,90 @@
 
             <div class="container book-container">
 
-                <h3 class="center">Hola soy un titulo</h3>
-                <div class="col s4">
-                    <h5>ISBN: </h5>
-                    <h5>Páginas: </h5>
-                    <h5>Idioma: </h5>
-                    <h5>Género: </h5>
-                    <h5>Editorial: </h5>
-                    <h5>En stock: </h5>
-                    <br>
-                    <a class="waves-effect waves-light btn-large orange darken-4">Ordenar</a>
-                </div>
-                <div class="col s2"></div>
-                    
-                <div class="col s6">
-                    <h5>9788499899688</h5>
-                    <h5>400</h5>
-                    <h5>Español</h5>
-                    <h5>Novela</h5>
-                    <h5>Planeta</h5>
-                    <h5>5</h5>
-                </div>
+              
           
             </div>
             
         </div>
             
     </div>
-   
+<script>
+    // ... código existente ...
+    const urlParams = new URLSearchParams(window.location.search);
+    const isbn = urlParams.get('isbn');
+
+    fetch(`/data/${isbn}`)
+        .then(response => response.json())
+        .then(data => {
+
+            
+        // Obtener el nombre del género
+        fetch(`/data/genre/${data.genre}`)
+            .then(response => response.json())
+            .then(genreData => {
+            const genreName = genreData.genreName;
+
+    
+            // Obtener el nombre del editorial
+            fetch(`/data/publisher/${data.publisher}`)
+                .then(response => response.json())
+                .then(publisherData => {
+                const publisherName = publisherData.publisherName;
+    
+                // Renderizar la información del libro en la página
+                const bookContainer = document.querySelector('.book-container');
+                bookContainer.innerHTML = `
+                    <h3 class="center">${data.title}</h3>
+                    <div class="col s4">
+                    <h5>ISBN:</h5>
+                    <h5>Autor:</h5>
+                    <h5>Páginas:</h5>
+                    <h5>Idioma:</h5>
+                    <h5>Género:</h5>
+                    <h5>Editorial:</h5>
+                    <br>
+                    <br>
+                    <br>
+                    <h5>En stock:</h5>
+                    <br>
+                    <a class="waves-effect waves-light btn-large orange darken-4">Ordenar</a>
+                    </div>
+                    <div class="col s2"></div>
+                    <div class="col s6">
+                    <h5>${data.isbn}</h5>
+                    <h5>${data.authorName} ${data.authorLastName}</h5>
+                    <h5>${data.pages}</h5>
+                    <h5>${data.language}</h5>
+                    <h5>${genreName}</h5>
+                    <h5>${publisherName}</h5>
+                    <br>
+                    <br>
+                    <br>
+                    <h5>${data.stock}</h5>
+                    </div>
+                `;
+    
+                // Cambiar la imagen
+                const cardImage = document.querySelector('.card-image img');
+                cardImage.src = `https://covers.openlibrary.org/b/isbn/${data.isbn}-L.jpg`;
+    
+                // Obtener el año de la fecha
+                const date = new Date(data.year);
+                const year = "Edicion: "+ date.getFullYear();
+    
+                // Cambiar el título
+                const cardTitle = document.querySelector('.card-image .card-title');
+                cardTitle.textContent = year.toString();
+                })
+                .catch(error => console.error(error));
+            })
+            .catch(error => console.error(error));
+        })
+        .catch(error => console.error(error));
+    </script> 
+
+
+
 
 
     

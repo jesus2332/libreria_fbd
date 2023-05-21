@@ -10,7 +10,7 @@ app.use(bodyParser.json());
 const dbConfig = {
   user: 'LIBRARYFCM',
   password: 'condenado',
-  connectString: 'localhost:1521/xepdb1'
+  connectString: '192.168.56.1:1521/xepdb1'
 };
 
 const templateFile = './WWW/result.html';
@@ -112,10 +112,10 @@ function generateRowsHTML(data) {
         <div class="card hoverable card-element">
           <div class="card-image valign-wrapper card-index-image">
             <img src="https://covers.openlibrary.org/b/isbn/${row[0]}-L.jpg ">
-            <a href="bookPage.html" class="btn-floating halfway-fab left waves-effect waves-light orange" style="left: 40%;"><i class="material-icons">add</i></a>
+            <a href="bookPage.html?isbn=${row[0]}" class="btn-floating halfway-fab left waves-effect waves-light orange" style="left: 40%;"><i class="material-icons">add</i></a>
           </div>
           <div class="card-content center" id="card-title">
-            <h6>${decodeURIComponent(row[1])}</h6>                    
+            <h6>${decodeURIComponent(escape(row[1]))}</h6>                    
           </div>
         </div>
       </div>
@@ -124,6 +124,88 @@ function generateRowsHTML(data) {
     )
     .join('');
 }
+
+
+
+app.get('/data/genre/:id', async (req, res) => {
+  try {
+    const genreId = req.params.id;
+    const connection = await oracledb.getConnection(dbConfig);
+    const result = await connection.execute(
+      'SELECT generonombre FROM genero WHERE generoid = :id',
+      [genreId]
+    );
+    await connection.close();
+
+    const genreName = result.rows[0][0];  //genreName utilizado con .genreName
+    res.json({ genreName });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error retrieving genre name from database.' });
+  }
+});
+
+
+
+app.get('/data/publisher/:id', async (req, res) => {
+  try {
+    const publisherId = req.params.id;
+    const connection = await oracledb.getConnection(dbConfig);
+    const result = await connection.execute(
+      'SELECT editorialnombre FROM editorial WHERE editorialid = :id',
+      [publisherId]
+    );
+    await connection.close();
+
+    const publisherName = result.rows[0][0];
+    res.json({ publisherName });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error retrieving publisher name from database.' });
+  }
+});
+
+
+
+app.get('/data/:isbn', async (req, res) => {
+  try {
+    const isbn = req.params.isbn;
+
+    // Obtener la información del libro desde la base de datos según el ISBN
+    const connection = await oracledb.getConnection(dbConfig);
+    const result = await connection.execute('SELECT * FROM libro WHERE BOOKID = :BOOKID', [isbn]);
+    const book = result.rows[0];
+
+    const authorResult = await connection.execute('SELECT * FROM autor WHERE autorid IN (SELECT autorid FROM autor_libro WHERE bookid = :BOOKID)', [isbn]);
+    const author = authorResult.rows[0];
+    
+
+    await connection.close();
+
+    // Enviar la información del libro como respuesta
+    res.json({
+      isbn: book[0],
+      pages: book[3],
+      language: decodeURIComponent(escape(book[5])),
+      genre: book[6],
+      publisher: book[7],
+      stock: book[4],
+      title: decodeURIComponent(escape(book[1])),
+      year: book[2],
+      authorName: author[1],
+      authorLastName: author[2]
+      
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error al obtener la información del libro' });
+  }
+});
+
+
+
+
+
 
 app.get('/data', async (req, res) => {
   try {
