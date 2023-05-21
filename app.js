@@ -10,7 +10,7 @@ app.use(bodyParser.json());
 const dbConfig = {
   user: 'LIBRARYFCM',
   password: 'condenado',
-  connectString: '192.168.56.1:1521/xepdb1'
+  connectString: 'localhost:1521/xepdb1'
 };
 
 const templateFile = './WWW/result.html';
@@ -108,20 +108,21 @@ function generateRowsHTML(data) {
     .map(
       row => `
     <div class="col s3 data-category-id="${row[6]}">
-          <div class="card-wrapper">
-              <div class="card hoverable card-element">
-                  <div class="card-image valign-wrapper card-index-image">
-                    <img src="https://covers.openlibrary.org/b/isbn/${row[0]}-L.jpg ">
-                    <a href="bookPage.html" class="btn-floating halfway-fab left waves-effect waves-light orange" style="left: 40%;"><i class="material-icons">add</i></a>
-                  </div>
-                  <div class="card-content center" id="card-title">
-                    <h6>${decodeURIComponent(escape(row[1]))}</h6>                    
-                  </div>
-              </div>
-         </div>
-  </div>
+      <div class="card-wrapper">
+        <div class="card hoverable card-element">
+          <div class="card-image valign-wrapper card-index-image">
+            <img src="https://covers.openlibrary.org/b/isbn/${row[0]}-L.jpg ">
+            <a href="bookPage.html" class="btn-floating halfway-fab left waves-effect waves-light orange" style="left: 40%;"><i class="material-icons">add</i></a>
+          </div>
+          <div class="card-content center" id="card-title">
+            <h6>${decodeURIComponent(row[1])}</h6>                    
+          </div>
+        </div>
+      </div>
+    </div>
     `
-    ).join('');
+    )
+    .join('');
 }
 
 app.get('/data', async (req, res) => {
