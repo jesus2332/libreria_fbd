@@ -1,3 +1,13 @@
+fetch(document.getElementById('card-gallery').dataset.apiUrl)
+          .then(response => response.text())
+          .then(data => {
+            const cardGallery = document.getElementById('card-gallery');
+            cardGallery.innerHTML = data;
+          })
+.catch(error => console.error(error));
+
+
+
 function searchBooks() {
     const searchInput = document.getElementById('search-input');
     const searchTerm = searchInput.value.toLowerCase();
@@ -16,3 +26,17 @@ function searchBooks() {
     }
 }
 
+
+document.getElementById('logout-icon').addEventListener('click', () => {
+  fetch('/logout')
+    .then(response => {
+      if (response.ok) {
+        window.location.href = '/index.html';
+      } else {
+        console.error('Error al cerrar sesión');
+      }
+    })
+    .catch(error => {
+      console.error(error);
+    });
+});

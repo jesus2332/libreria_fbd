@@ -28,8 +28,8 @@
     <div class="row">
         <div class="col s2">
             <div class="logo-container2">
-                <a href="index.html"><img src="img/logo.png"  class="hoverable" alt=""></a>
-            </div>
+                <a href="books.html"><img src="img/logo.png"  class="hoverable" alt=""></a>
+            </div>  
         </div>
     </div>
 
@@ -96,25 +96,18 @@
                     <h5>Páginas:</h5>
                     <h5>Idioma:</h5>
                     <h5>Género:</h5>
-                    <h5>Editorial:</h5>
-                    <br>
-                    <br>
-                    <br>
+                    <h5>Editorial: <div style="visibility: hidden;"> <h5></h5></div></h5>
                     <h5>En stock:</h5>
-                    <br>
                     <a class="waves-effect waves-light btn-large orange darken-4">Ordenar</a>
                     </div>
-                    <div class="col s2"></div>
-                    <div class="col s6">
+                    
+                    <div class="col s8">
                     <h5>${data.isbn}</h5>
                     <h5>${data.authorName} ${data.authorLastName}</h5>
                     <h5>${data.pages}</h5>
                     <h5>${data.language}</h5>
                     <h5>${genreName}</h5>
                     <h5>${publisherName}</h5>
-                    <br>
-                    <br>
-                    <br>
                     <h5>${data.stock}</h5>
                     </div>
                 `;
@@ -141,7 +134,7 @@
 
 
 
-
+    <script src="js/user.js"></script>
     
 </body>
 </html>

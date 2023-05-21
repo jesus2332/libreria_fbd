@@ -7,8 +7,10 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+var loggedUserID = null;
+
 const dbConfig = {
-  user: 'LIBRARYFCM',
+  user: 'BIBLIOTECAFCM',
   password: 'condenado',
   connectString: '192.168.56.1:1521/xepdb1'
 };
@@ -42,43 +44,7 @@ function generateUsernp() {
 }
 
 
-app.post('/reg', async (req, res) => {
 
-  try {
-    let usuarioid = generateUserID();
-    let numeroprestamos = generateUsernp();
-    const {
-      usuarionombre,
-      usuarioapellido,
-      usuariodireccion,
-      usuariotelefono,
-      usuariocorreo,
-      usuariocontrasena
-    } = req.body;
-
-    const connection = await oracledb.getConnection(dbConfig);
-    const result = await connection.execute(
-      `INSERT INTO usuario (usuarioid, usuarionombre, usuarioapellido, numeroprestamos, usuariodireccion, usuariotelefono, usuariocorreo, usuariocontrasena)
-       VALUES (:usuarioid, :usuarionombre, :usuarioapellido, :numeroprestamos, :usuariodireccion, :usuariotelefono, :usuariocorreo, :usuariocontrasena)`,
-      [usuarioid, usuarionombre, usuarioapellido, numeroprestamos, usuariodireccion, usuariotelefono, usuariocorreo, usuariocontrasena]
-    );
-
-    await connection.commit();
-    await connection.close();
-
-    const alertHTML = `
-    <script>
-      alert('Usuario registrado exitosamente');
-      window.location.href = '/login.html'; // Redirige a otra página después de mostrar el alert
-    </script>
-  `;
-  res.send(alertHTML);
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ error: 'Error al registrar el usuario' });
-
-  }
-});
 
 
 
@@ -137,7 +103,8 @@ app.get('/data/genre/:id', async (req, res) => {
     );
     await connection.close();
 
-    const genreName = result.rows[0][0];  //genreName utilizado con .genreName
+    const genreName = decodeURIComponent(escape(result.rows[0][0]));  //genreName utilizado con .genreName
+    
     res.json({ genreName });
   } catch (error) {
     console.error(error);
@@ -173,10 +140,10 @@ app.get('/data/:isbn', async (req, res) => {
 
     // Obtener la información del libro desde la base de datos según el ISBN
     const connection = await oracledb.getConnection(dbConfig);
-    const result = await connection.execute('SELECT * FROM libro WHERE BOOKID = :BOOKID', [isbn]);
+    const result = await connection.execute('SELECT * FROM libro WHERE LibroID = :LibroID', [isbn]);
     const book = result.rows[0];
 
-    const authorResult = await connection.execute('SELECT * FROM autor WHERE autorid IN (SELECT autorid FROM autor_libro WHERE bookid = :BOOKID)', [isbn]);
+    const authorResult = await connection.execute('SELECT * FROM autor WHERE autorid IN (SELECT autorid FROM autor_libro WHERE LibroID = :LibroID)', [isbn]);
     const author = authorResult.rows[0];
     
 
@@ -232,6 +199,47 @@ app.get('/data', async (req, res) => {
 });
 
 
+
+
+app.post('/reg', async (req, res) => {
+
+  try {
+    let usuarioid = generateUserID();
+    let numeroprestamos = generateUsernp();
+    const {
+      usuarionombre,
+      usuarioapellido,
+      usuariodireccion,
+      usuariotelefono,
+      usuariocorreo,
+      usuariocontrasena
+    } = req.body;
+
+    const connection = await oracledb.getConnection(dbConfig);
+    const result = await connection.execute(
+      `INSERT INTO usuario (usuarioid, usuarionombre, usuarioapellido, numeroprestamos, usuariodireccion, usuariotelefono, usuariocorreo, usuariocontrasena)
+       VALUES (:usuarioid, :usuarionombre, :usuarioapellido, :numeroprestamos, :usuariodireccion, :usuariotelefono, :usuariocorreo, :usuariocontrasena)`,
+      [usuarioid, usuarionombre, usuarioapellido, numeroprestamos, usuariodireccion, usuariotelefono, usuariocorreo, usuariocontrasena]
+    );
+
+    await connection.commit();
+    await connection.close();
+
+    const alertHTML = `
+    <script>
+      alert('Usuario registrado exitosamente, por favor inicie sesión');
+      window.location.href = '/index.html'; // Redirige a otra página después de mostrar el alert
+    </script>
+  `;
+  res.send(alertHTML);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: 'Error al registrar el usuario' });
+
+  }
+});
+
+
 app.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
@@ -242,11 +250,24 @@ app.post('/login', async (req, res) => {
       [email, password]
     );
 
+    console.log(result.rows);
+
+    const sucessAlert = `
+    <script>
+      alert('Usuario logeado exitosamente');
+      window.location.href = '/books.html'; // Redirige a otra página después de mostrar el alert
+    </script>
+  `;
+
     await connection.close();
 
     if (result.rows.length > 0) {
       // Se encontró una coincidencia en la base de datos
-      res.redirect('./userOrders.html');
+      loggedUserID = result.rows[0][0];
+      res.send(sucessAlert);
+      
+      
+
     } else {
       // No se encontraron coincidencias en la base de datos
       res.status(401).json({ message: 'Credenciales inválidas' });
@@ -256,6 +277,20 @@ app.post('/login', async (req, res) => {
     res.status(500).json({ error: 'Error al comparar los datos con la base de datos' });
   }
 });
+
+
+app.get('/loggedUserID', (req, res) => {
+  res.json({ loggedUserID });
+});
+
+app.get('/logout', (req, res) => {
+  loggedUserID = null;
+  res.redirect('/index.html');
+});
+
+//proteger mis rutas books.html userOrders.html bookPage.html si el loggedUserID es null, es decir, si no hay un usuario logeado en el sistema entonces redirigir a index.html
+
+
 
 app.use(express.static('WWW'));
 

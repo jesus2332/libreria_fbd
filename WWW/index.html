@@ -5,149 +5,171 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
      <!-- Importar fuente allura -->
 
      <link rel="preconnect" href="https://fonts.googleapis.com">
      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
      <link href="https://fonts.googleapis.com/css2?family=Allura&display=swap" rel="stylesheet">
+
+     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
      
 
-    <!-- Compiled and minified CSS -->
-    <link rel="stylesheet" href="css/materialize.min.css">
 
-    <link rel="stylesheet" href="css/styles.css">
+     <!-- Compiled and minified CSS -->
+     <link rel="stylesheet" href="css/materialize.min.css">
 
-    <!-- Compiled and minified JavaScript -->
-    <script src="js/materialize.min.js"></script>
+     <link rel="stylesheet" href="css/styles.css">
+ 
+     <!-- Compiled and minified JavaScript -->
+     <script src="js/materialize.min.js"></script>
 
-    <title>Libreria FCM</title>
+    <title>Biblioteca FCM </title>
 </head>
-<body style="background: #FFFBED;">
+<body style="background:#FFFBED;;">
 
 
-    <div class="row">
+    <div class="general-container">
 
-
-        <div class="col s3 z-depth-2" id="side-bar">
-
-            <div id="icons">
-                <a href="login.html">
-                    <ion-icon name="person-circle-outline" ></ion-icon>
-                </a>
-                <a href="userOrders.html">
-                    <ion-icon name="list-circle-outline"></ion-icon>
-
-                </a>
-                
-            </div>
-
-            <div id="logo">
-                <img src="img/logo.png">
-            </div>
-
-            <div class="input-field col s12">
-                <i class="material-icons prefix">search</i>
-                <input id="search-input" type="text" oninput="searchBooks()">
-                <label for="icon_prefix">Search</label>
-
-            </div>
-
-            <div id="category">
-                <h5>Categorías</h5>
-                <div id="category-items">
-                    <form action="#">
-                        <p>
-                            <label>
-                              <input name="group1" type="radio" class="with-gap " >
-                              <span>Arte</span>
-                            </label>
-                        </p>
-                          <p>
-                            <label>
-                              <input name="group1" type="radio" class="with-gap"  />
-                              <span>Aventura</span>
-                            </label>
-                          </p>
-                            <p>
-                                <label>
-                                <input name="group1" type="radio" class="with-gap" />
-                                <span>Ciencia ficción</span>
-                                </label>
-                            </p>
-                           
-                            <p>
-                                <label>
-                                <input name="group1" type="radio" class="with-gap" />
-                                <span>Fantasía</span>
-                                </label>
-                            </p>
-    
-                            <p>
-                                <label>
-                                <input name="group1" type="radio" class="with-gap" />
-                                <span>Filosofía</span>
-                                </label>
-                            </p>
-    
-                            <p>
-                                <label>
-                                <input name="group1" type="radio" class="with-gap" />
-                                <span>Historia</span>
-                                </label>
-                            </p>
-    
-                            <p>
-                                <label>
-                                <input name="group1" type="radio" class="with-gap" />
-                                <span>Terror</span>
-                                </label>
-                            </p>
-
-                    </form>
-                    
-
-                     
-                </div>
-                
+        <div class="row">
+            <div class="logo-container-index center">
+                <img src="img/logo.png" class="hoverable" alt="">
+                <h1>Bienvenido</h1>
             </div>
             
             
         </div>
 
+        <div class="row">
+            <h2>¿Estas registrado?</h2>
+        </div>
 
+        <div class="row">
 
-        <div class="col s9" id="teal-page">
-            <div id="title-box">
-                <h1>Biblioteca FCM</h1>
+            <div class="col s6">
+                <h3 class="center">Si</h3>
+
+                <div class="container">
+                    <h5 class="center" style="font-family: 'Amiri';">Por favor ingresa con tu cuenta </h5>
+                    
+
+                    <div class="login-container hoverable" >
+                      
+                        <div class="login center" id="login-form">
+                            <i class="material-icons large">person_pin</i>
+                            <br>
+
+                            <div class="container">
+                                <form id="loginForm" action="/login" method="POST">
+                                    <div class="input-field col s12">
+                                        <input id="email" name="email" type="text" class="validate">
+                                        <label for="email">E-mail</label>
+                                    </div>
+                                    <div class="input-field col s12">
+                                        <input id="password" name="password" type="password" class="validate">
+                                        <label for="password">Contraseña</label>
+                                    </div>
+                                    <button class="btn waves-effect waves-light orange darken-4" type="submit" id="loginButton">Ingresar</button>
+                                </form>
+
+                              
+
+                            </div>
+                            
+
+                        </div>
+                 
+
+                       
+                        
+                            
+                    </div>
+
+                </div>
+               
             </div>
 
-            <div class="container" id="card-gallery" data-api-url="/data">
+            <div class="col s6">
+                <h3 class="center">No</h3>
+
+                <div class="container">
+                    <h5 class="center" style="font-family: 'Amiri';">Por favor registrese</h5>
+                    
+
+                    <div class="login-container hoverable" >
+                      
+                        <div class="login center" id="login-form">
+                            <i class="material-icons large">assignment</i>
+                            <br>
+
+                            <div class="container">
+                                <form action="/reg" method="POST" id="loginForm">
+                                    <div class="input-field col s6 ">
+                                        <input name="usuarionombre"  id="usuarionombre" type="text" class="validate" required>
+                                        <label for="usuarionombre">Nombres</label>
+                                    </div>
+                                      
+                                    <div class="input-field col s6">
+                                        <input type="text" id="usuarioapellido" name="usuarioapellido" class="validate" required >
+                                        <label for="usuarioapellido">Apellidos</label>
+                                    </div>
+                               
+                                    <div class="input-field col s12">
+                                        <input type="text" id="usuariodireccion" name="usuariodireccion"  class="validate"  required >
+                                        <label for="usuariodireccion">Direccion</label>
+                                    </div>
+                                    <div class="input-field col s12">
+                                        <input type="text" id="usuariotelefono" name="usuariotelefono"  class="validate" required>
+                                        <label for="usuariotelefono">Telefono</label>
+                                    </div>
+    
+                                    <div class="input-field col s12">
+                                        <input type="email" id="usuariocorreo" name="usuariocorreo" class="validate" required >
+                                        <label for="usuariocorreo">E-mail</label>
+                                    </div>
+    
+                                    <div class="input-field col s12">
+                                        <input type="password" id="usuariocontrasena" name="usuariocontrasena" required>
+                                        <label for="usuariocontrasena">Contraseña</label>
+                                    </div>
+    
+                                    <button class="btn waves-effect waves-light orange darken-4 " type="submit">Registrarse</button>
+
+                                </form>
+
+                                
 
 
-                
-                
+                            </div>
+                            
+
+                        </div>
+                 
+
+                       
+                        
+                            
+                    </div>
+
+                </div>
+               
             </div>
-                
-          </div>
- 
+
+
+
+        
+        </div>
+        
+
+
+
     </div>
 
-   
-    <script>
-        fetch(document.getElementById('card-gallery').dataset.apiUrl)
-          .then(response => response.text())
-          .then(data => {
-            const cardGallery = document.getElementById('card-gallery');
-            cardGallery.innerHTML = data;
-          })
-          .catch(error => console.error(error));
-    </script>
+        
 
-    <script src="js/main.js"></script>
-    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
-    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+      
 
+
+    <script src="js/user.js"></script>
 </body>
 </html>

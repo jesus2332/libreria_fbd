@@ -1,10 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Allura&family=Amiri&display=swap');
 
 
+
+
 #side-bar{
     background-color: #FFF8E1;
     position: relative;
-    height: 160vh; 
+    height: 610vh; 
+    
 
 
     
@@ -42,6 +45,8 @@ ion-icon{
     align-items: center;
     width: 95%;
 }
+
+
 
 
 
@@ -139,6 +144,26 @@ a{
 
 }
 
+.logo-container-index img{
+    /* hacer el icono a la izquierda */
+    position: relative;
+    
+
+    width: 20%;
+
+
+
+
+}
+
+.logo-container-index h1{
+    font-family: 'Allura';
+    padding: 0;
+    margin: 0;
+    font-size: 6.5rem;
+    margin-bottom: 7%;
+}
+
 .logo-container2 img{
     position: relative;
     width: 100%;
@@ -153,7 +178,7 @@ a{
 .general-container h2{
     font-family: "Allura";
     text-align: center;
-    font-size: 4.5rem;
+    font-size: 3.5rem;
     padding: 0;
     margin: 0;
 }
