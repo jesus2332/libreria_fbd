@@ -42,7 +42,7 @@ function generateUsernp() {
 }
 
 
-app.post('/login', async (req, res) => {
+app.post('/reg', async (req, res) => {
 
   try {
     let usuarioid = generateUserID();
@@ -145,6 +145,32 @@ app.get('/data', async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).send('Error retrieving data from Oracle DB.');
+  }
+});
+
+
+app.post('/login', async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    const connection = await oracledb.getConnection(dbConfig);
+    const result = await connection.execute(
+     `SELECT * FROM usuario WHERE usuariocorreo = :email AND usuariocontrasena = :password`,
+      [email, password]
+    );
+
+    await connection.close();
+
+    if (result.rows.length > 0) {
+      // Se encontró una coincidencia en la base de datos
+      res.redirect('./userOrders.html');
+    } else {
+      // No se encontraron coincidencias en la base de datos
+      res.status(401).json({ message: 'Credenciales inválidas' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error al comparar los datos con la base de datos' });
   }
 });
 

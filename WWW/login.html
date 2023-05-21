@@ -59,21 +59,16 @@
                             <br>
 
                             <div class="container">
-
-                                <form action="#">
-
-                                    <div class="input-field col s12 ">
-                                        <input id="email" type="text" class="validate">
+                                <form id="loginForm" action="/login" method="POST">
+                                    <div class="input-field col s12">
+                                        <input id="email" name="email" type="text" class="validate">
                                         <label for="email">E-mail</label>
-                                      </div>
-                                      
-                                      <div class="input-field col s12">
-                                        <input id="password" type="text" class="validate">
+                                    </div>
+                                    <div class="input-field col s12">
+                                        <input id="password" name="password" type="password" class="validate">
                                         <label for="password">Contraseña</label>
-                                      </div>
-                                      <button class="btn waves-effect waves-light orange darken-4 " type="submit" name="action">Ingresar
-                                      </button>
-
+                                    </div>
+                                    <button class="btn waves-effect waves-light orange darken-4" type="submit" id="loginButton">Ingresar</button>
                                 </form>
 
                               
@@ -107,7 +102,7 @@
                             <br>
 
                             <div class="container">
-                                <form action="/login" method="POST" id="loginForm">
+                                <form action="/reg" method="POST" id="loginForm">
                                     <div class="input-field col s6 ">
                                         <input name="usuarionombre"  id="usuarionombre" type="text" class="validate" required>
                                         <label for="usuarionombre">Nombres</label>
