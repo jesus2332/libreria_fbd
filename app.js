@@ -12,14 +12,14 @@ var loggedUserID = null;
 const dbConfig = {
   user: 'LIBRARYFCM',
   password: 'condenado',
-  connectString: 'localhost:1521/xepdb1'
+  connectString: '192.168.56.1:1521/xepdb1'
 };
 
 const templateFile = './WWW/result.html';
 
 function generateUserID() {
   const numbers = '0123456789';
-  const length = 4;
+  const length = 6;
   let userID = '';
 
   for (let i = 0; i < length; i++) {
@@ -30,17 +30,19 @@ function generateUserID() {
   return userID;
 }
 
-function generateUsernp() {
+
+
+function generateLoanId() {
   const numbers = '0123456789';
-  const length = 6;
-  let userNP = '';
+  const length = 10;
+  let LoanID = '';
 
   for (let i = 0; i < length; i++) {
     const randomIndex = Math.floor(Math.random() * numbers.length);
-    userNP += numbers.charAt(randomIndex);
+    LoanID += numbers.charAt(randomIndex);
   }
 
-  return userNP;
+  return LoanID;
 }
 
 
@@ -98,7 +100,6 @@ function generateRowsHTML(data) {
 app.get('/data/genre/:id', async (req, res) => {
   try {
     const genreId = req.params.id;
-    console.log(genreId);
     const connection = await oracledb.getConnection(dbConfig);
     const result = await connection.execute(
       'SELECT generonombre FROM genero WHERE generoid = :id',
@@ -107,7 +108,6 @@ app.get('/data/genre/:id', async (req, res) => {
     await connection.close();
 
     const genreName = decodeURIComponent((result.rows[0][0]));  //genreName utilizado con .genreName
-    console.log(genreName);
     res.json({ genreName });
   } catch (error) {
     console.error(error);
@@ -120,7 +120,6 @@ app.get('/data/genre/:id', async (req, res) => {
 app.get('/data/publisher/:id', async (req, res) => {
   try {
     const publisherId = req.params.id;
-    console.log(publisherId);
     const connection = await oracledb.getConnection(dbConfig);
     const result = await connection.execute(
       'SELECT editorialnombre FROM editorial WHERE editorialid = :id',
@@ -129,7 +128,6 @@ app.get('/data/publisher/:id', async (req, res) => {
     await connection.close();
 
     const publisherName = result.rows[0][0];
-    console.log(publisherName);
     res.json({ publisherName });
   } catch (error) {
     console.error(error);
@@ -205,7 +203,7 @@ app.post('/reg', async (req, res) => {
 
   try {
     let usuarioid = generateUserID();
-    let numeroprestamos = generateUsernp();
+
     const {
       usuarionombre,
       usuarioapellido,
@@ -217,9 +215,9 @@ app.post('/reg', async (req, res) => {
 
     const connection = await oracledb.getConnection(dbConfig);
     const result = await connection.execute(
-      `INSERT INTO usuario (usuarioid, usuarionombre, usuarioapellido, numeroprestamos, usuariodireccion, usuariotelefono, usuariocorreo, usuariocontraseña)
-       VALUES (:usuarioid, :usuarionombre, :usuarioapellido, :numeroprestamos, :usuariodireccion, :usuariotelefono, :usuariocorreo, :usuariocontraseña)`,
-      [usuarioid, usuarionombre, usuarioapellido, numeroprestamos, usuariodireccion, usuariotelefono, usuariocorreo, usuariocontrasena]
+      `INSERT INTO usuario (usuarioid, usuarionombre, usuarioapellido,  usuariodireccion, usuariotelefono, usuariocorreo, usuariocontrasena)
+       VALUES (:usuarioid, :usuarionombre, :usuarioapellido,  :usuariodireccion, :usuariotelefono, :usuariocorreo, :usuariocontrasena)`,
+      [usuarioid, usuarionombre, usuarioapellido, usuariodireccion, usuariotelefono, usuariocorreo, usuariocontrasena]
     );
 
     await connection.commit();
@@ -246,7 +244,7 @@ app.post('/login', async (req, res) => {
   try {
     const connection = await oracledb.getConnection(dbConfig);
     const result = await connection.execute(
-     `SELECT * FROM usuario WHERE usuariocorreo = :email AND usuariocontraseña = :password`,
+     `SELECT * FROM usuario WHERE usuariocorreo = :email AND usuariocontrasena = :password`,
       [email, password]
     );
 
@@ -265,8 +263,6 @@ app.post('/login', async (req, res) => {
       // Se encontró una coincidencia en la base de datos
       loggedUserID = result.rows[0][0];
       res.send(sucessAlert);
-      
-      
 
     } else {
       // No se encontraron coincidencias en la base de datos
@@ -278,6 +274,61 @@ app.post('/login', async (req, res) => {
   }
 });
 
+
+
+
+app.post('/order', async (req, res) => {
+  prestamoID = generateLoanId();
+  const { isbn } = req.body;
+  const userID = loggedUserID;
+  console.log(userID,isbn);
+  const sucessAlert = `
+    <script>
+      alert('Usuario logeado exitosamente');// Redirige a otra página después de mostrar el alert
+    </script>
+  `;
+  try {
+    const connection = await oracledb.getConnection(dbConfig);
+    const result = await connection.execute(
+      `SELECT a.ArticuloID
+      FROM Articulo a
+      LEFT JOIN Prestamo p ON a.ArticuloID = p.ArticuloID
+      WHERE a.LibroID = :isbn AND p.ArticuloID IS NULL AND ROWNUM = 1
+      `,
+      [isbn]
+    );
+    await connection.close();
+
+    if(result.rows[0] == undefined){
+      console.log("Ya no hay stock  disponible")
+    }
+    else{
+      articuloID = result.rows[0][0];
+      const connection = await oracledb.getConnection(dbConfig);
+      const loan = await connection.execute(
+        `INSERT INTO Prestamo (PrestamoID, PrestamoFecha, PrestamoCaducidad, PrestamoEstatus, UsuarioID, ArticuloID)
+          VALUES (:prestamoid, SYSDATE, SYSDATE+7, 'Activo', :userID, :articuloID)`,
+        [prestamoID, userID, articuloID]
+      );
+      const minusStock = await connection.execute(
+        `UPDATE Libro SET Cantidad = Cantidad - 1 WHERE LibroID = :isbn`,
+        [isbn]
+      );
+      await connection.commit();
+      await connection.close();
+      console.log("Prestamo registrado exitosamente");
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error al registrar el prestamo' });
+  }
+});
+
+
+  
+
+
+    
 
 app.get('/loggedUserID', (req, res) => {
   res.json({ loggedUserID });

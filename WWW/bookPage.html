@@ -59,6 +59,8 @@
               
           
             </div>
+
+            <button id="order-button" class="waves-effect waves-light btn-large orange darken-4" style="left:17%" >Ordenar</button>
             
         </div>
             
@@ -98,11 +100,11 @@
                     <h5>Género:</h5>
                     <h5>Editorial: <div style="visibility: hidden;"> <h5></h5></div></h5>
                     <h5>En stock:</h5>
-                    <a class="waves-effect waves-light btn-large orange darken-4">Ordenar</a>
+                    
                     </div>
                     
                     <div class="col s8">
-                    <h5>${data.isbn}</h5>
+                    <h5 id="book-isbn">${data.isbn}</h5>
                     <h5>${data.authorName} ${data.authorLastName}</h5>
                     <h5>${data.pages}</h5>
                     <h5>${data.language}</h5>
