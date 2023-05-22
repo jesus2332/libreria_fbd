@@ -10,9 +10,9 @@ app.use(bodyParser.json());
 var loggedUserID = null;
 
 const dbConfig = {
-  user: 'BIBLIOTECAFCM',
+  user: 'LIBRARYFCM',
   password: 'condenado',
-  connectString: '192.168.56.1:1521/xepdb1'
+  connectString: 'localhost:1521/xepdb1'
 };
 
 const templateFile = './WWW/result.html';
@@ -82,7 +82,7 @@ function generateRowsHTML(data) {
             <a href="bookPage.html?isbn=${row[0]}" class="btn-floating halfway-fab left waves-effect waves-light orange" style="left: 40%;"><i class="material-icons">add</i></a>
           </div>
           <div class="card-content center" id="card-title">
-            <h6>${decodeURIComponent(escape(row[1]))}</h6>                    
+            <h6>${decodeURIComponent((row[1]))}</h6>                    
           </div>
         </div>
       </div>
@@ -98,6 +98,7 @@ function generateRowsHTML(data) {
 app.get('/data/genre/:id', async (req, res) => {
   try {
     const genreId = req.params.id;
+    console.log(genreId);
     const connection = await oracledb.getConnection(dbConfig);
     const result = await connection.execute(
       'SELECT generonombre FROM genero WHERE generoid = :id',
@@ -105,8 +106,8 @@ app.get('/data/genre/:id', async (req, res) => {
     );
     await connection.close();
 
-    const genreName = decodeURIComponent(escape(result.rows[0][0]));  //genreName utilizado con .genreName
-    
+    const genreName = decodeURIComponent((result.rows[0][0]));  //genreName utilizado con .genreName
+    console.log(genreName);
     res.json({ genreName });
   } catch (error) {
     console.error(error);
@@ -119,6 +120,7 @@ app.get('/data/genre/:id', async (req, res) => {
 app.get('/data/publisher/:id', async (req, res) => {
   try {
     const publisherId = req.params.id;
+    console.log(publisherId);
     const connection = await oracledb.getConnection(dbConfig);
     const result = await connection.execute(
       'SELECT editorialnombre FROM editorial WHERE editorialid = :id',
@@ -127,6 +129,7 @@ app.get('/data/publisher/:id', async (req, res) => {
     await connection.close();
 
     const publisherName = result.rows[0][0];
+    console.log(publisherName);
     res.json({ publisherName });
   } catch (error) {
     console.error(error);
@@ -155,11 +158,11 @@ app.get('/data/:isbn', async (req, res) => {
     res.json({
       isbn: book[0],
       pages: book[3],
-      language: decodeURIComponent(escape(book[5])),
+      language: book[5],
       genre: book[6],
       publisher: book[7],
       stock: book[4],
-      title: decodeURIComponent(escape(book[1])),
+      title: book[1],
       year: book[2],
       authorName: author[1],
       authorLastName: author[2]
@@ -170,11 +173,6 @@ app.get('/data/:isbn', async (req, res) => {
     res.status(500).json({ error: 'Error al obtener la información del libro' });
   }
 });
-
-
-
-
-
 
 app.get('/data', async (req, res) => {
   try {
@@ -219,8 +217,8 @@ app.post('/reg', async (req, res) => {
 
     const connection = await oracledb.getConnection(dbConfig);
     const result = await connection.execute(
-      `INSERT INTO usuario (usuarioid, usuarionombre, usuarioapellido, numeroprestamos, usuariodireccion, usuariotelefono, usuariocorreo, usuariocontrasena)
-       VALUES (:usuarioid, :usuarionombre, :usuarioapellido, :numeroprestamos, :usuariodireccion, :usuariotelefono, :usuariocorreo, :usuariocontrasena)`,
+      `INSERT INTO usuario (usuarioid, usuarionombre, usuarioapellido, numeroprestamos, usuariodireccion, usuariotelefono, usuariocorreo, usuariocontraseña)
+       VALUES (:usuarioid, :usuarionombre, :usuarioapellido, :numeroprestamos, :usuariodireccion, :usuariotelefono, :usuariocorreo, :usuariocontraseña)`,
       [usuarioid, usuarionombre, usuarioapellido, numeroprestamos, usuariodireccion, usuariotelefono, usuariocorreo, usuariocontrasena]
     );
 
@@ -248,7 +246,7 @@ app.post('/login', async (req, res) => {
   try {
     const connection = await oracledb.getConnection(dbConfig);
     const result = await connection.execute(
-     `SELECT * FROM usuario WHERE usuariocorreo = :email AND usuariocontrasena = :password`,
+     `SELECT * FROM usuario WHERE usuariocorreo = :email AND usuariocontraseña = :password`,
       [email, password]
     );
 
