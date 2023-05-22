@@ -73,8 +73,9 @@ function generateRowsHTML(data) {
   return data
     .map(
       row => `
-    <div class="col s3 data-category-id="${row[6]}">
-      <div class="card-wrapper">
+    <div class="col s3">
+    <div class="category${row[6]}">
+      <div class="card-wrapper"">
         <div class="card hoverable card-element">
           <div class="card-image valign-wrapper card-index-image">
             <img src="https://covers.openlibrary.org/b/isbn/${row[0]}-L.jpg ">
@@ -86,6 +87,7 @@ function generateRowsHTML(data) {
         </div>
       </div>
     </div>
+  </div>
     `
     )
     .join('');

@@ -53,62 +53,69 @@
             <div class="input-field col s12">
                 <i class="material-icons prefix">search</i>
                 <input id="search-input" type="text" oninput="searchBooks()">
-                <label for="icon_prefix">Search</label>
+                <label for="search-input">Search</label>
 
             </div>
 
             <div id="category">
                 <h5>Categorías</h5>
                 <div id="category-items">
-                    <form action="#">
+
+                    <p>
+                        <label>
+                            <input name="category" type="radio" class="with-gap " value="all" checked onchange="filterBooksByCategory()" >
+                            <span>Todos</span>
+                        </label>
+                    </p>
+                
+                    <p>
+                        <label>
+                            <input name="category" type="radio" class="with-gap " value="1"  onchange="filterBooksByCategory()" >
+                            <span>Arte</span>
+                        </label>
+                    </p>
+                        <p>
+                        <label>
+                            <input name="category" type="radio" class="with-gap"  value="2"  onchange="filterBooksByCategory()"/>
+                            <span>Aventura</span>
+                        </label>
+                        </p>
                         <p>
                             <label>
-                              <input name="group1" type="radio" class="with-gap " >
-                              <span>Arte</span>
+                            <input name="category" type="radio" class="with-gap" value="3"   onchange="filterBooksByCategory()"/>
+                            <span>Ciencia ficción</span>
                             </label>
                         </p>
-                          <p>
+                        
+                        <p>
                             <label>
-                              <input name="group1" type="radio" class="with-gap"  />
-                              <span>Aventura</span>
+                            <input name="category" type="radio" class="with-gap" value="4"   onchange="filterBooksByCategory()"/>
+                            <span>Fantasía</span>
                             </label>
-                          </p>
-                            <p>
-                                <label>
-                                <input name="group1" type="radio" class="with-gap" />
-                                <span>Ciencia ficción</span>
-                                </label>
-                            </p>
-                           
-                            <p>
-                                <label>
-                                <input name="group1" type="radio" class="with-gap" />
-                                <span>Fantasía</span>
-                                </label>
-                            </p>
-    
-                            <p>
-                                <label>
-                                <input name="group1" type="radio" class="with-gap" />
-                                <span>Filosofía</span>
-                                </label>
-                            </p>
-    
-                            <p>
-                                <label>
-                                <input name="group1" type="radio" class="with-gap" />
-                                <span>Historia</span>
-                                </label>
-                            </p>
-    
-                            <p>
-                                <label>
-                                <input name="group1" type="radio" class="with-gap" />
-                                <span>Terror</span>
-                                </label>
-                            </p>
+                        </p>
 
-                    </form>
+                        <p>
+                            <label>
+                            <input name="category" type="radio" class="with-gap" value="5"  onchange="filterBooksByCategory()"/>
+                            <span>Filosofía</span>
+                            </label>
+                        </p>
+
+                        <p>
+                            <label>
+                            <input name="category" type="radio" class="with-gap" value="6"  onchange="filterBooksByCategory()"/>
+                            <span>Historia</span>
+                            </label>
+                        </p>
+
+                        <p>
+                            <label>
+                            <input name="category" type="radio" class="with-gap" value="7"  onchange="filterBooksByCategory()"/>
+                            <span>Terror</span>
+                            </label>
+                        </p>
+
+              
                     
 
                      
