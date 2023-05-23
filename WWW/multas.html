@@ -1,37 +1,66 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Generación de Cards</title>
-  <style>
-    .card {
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      padding: 10px;
-      margin-bottom: 10px;
-      background-color: #fff;
-      box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-    }
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Importar fuente allura -->
 
-    .card-content {
-      margin-top: 10px;
-    }
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Allura&display=swap" rel="stylesheet">
+    
 
-    p {
-      margin: 5px 0;
-    }
-  </style>
+   <!-- Compiled and minified CSS -->
+   <link rel="stylesheet" href="css/materialize.min.css">
+
+   <link rel="stylesheet" href="css/styles.css">
+
+   <!-- Compiled and minified JavaScript -->
+   <script src="js/materialize.min.js"></script>
+    <title>Libreria FCM</title>
 </head>
-<body>
-  <div id="card-container"></div>
+<body style="background: #FFFBED;">
 
-  <button onclick="goToIndex()">Regresar a la página de inicio</button>
+    <div class="row">
+        <div class="col s2">
+            <div class="logo-container2">
+                <a href="books.html"><img src="img/logo.png"  class="hoverable" alt=""></a>
+            </div>
+            <div class="row">
+              
+                <a href="userOrders.html" class=" waves-effect waves-light btn-large">Ir a ordenes</a>
 
-  <script>
+         
+              
 
-    function goToIndex() {
-      window.location.href = 'books.html';
-    }
+            </div>
 
+        </div>
+        <div class="col s10">
+            <div class="order-text">
+                <h3>Mis multas</h3>
+                <h6>Favor de pasar a pagar sus multas en sucursal</h6>
+                
+                
+            </div>
+        </div>
+
+    </div>
+    
+
+    <div class="row">
+        <div class="container ">
+          <div class="cards-container">
+            <div id="card-container">
+            </div>
+          </div>
+        </div>
+    </div>
+
+    
+   <script>
     fetch('/multas')
       .then(response => response.json())
       .then(data => {
@@ -46,45 +75,44 @@
           document.getElementById('card-container').innerHTML = noMulta;
         } else {
           data.forEach(item => {
-            const card = document.createElement('div');
-            card.className = 'card';
-    
-            const cardContent = document.createElement('div');
-            cardContent.className = 'card-content';
-    
-            const multaID = document.createElement('p');
-            multaID.textContent = `Numero de multa: ${item.multaID}`;
-    
-            const monto = document.createElement('p');
-            monto.textContent = `monto: ${item.monto}`;
-    
-            const multaFecha = document.createElement('p');
-            multaFecha.textContent = `Fecha: ${item.multaFecha}`;
-    
-            const estatus = document.createElement('p');
-            estatus.textContent = `Estatus: ${item.estatus}`;
-    
-            const usuarioID = document.createElement('p');
-            usuarioID.textContent = `Usuario ID: ${item.usuarioID}`;
-    
-            cardContent.appendChild(multaID);
-            cardContent.appendChild(monto);
-            cardContent.appendChild(multaFecha);
-            cardContent.appendChild(estatus);
-            cardContent.appendChild(usuarioID);
+            loanHTML = 
+            `
+      <div class="row ">
+                <div class="col s2"></div>
+                <div class="col s8">
+                  <div class="card horizontal small hoverable">
+                    
+                    <div class="card-stacked">
+                      <div class="card-content center">
+                        <h5>Id de multa : ${item.fineID}</h5>
+                        <h6>Monto a pagar $: ${item.amount} </h6>
+                        <h6>Fecha de multa : ${item.fineDate} </h6>
+                        <h6>Usuario ID : ${item.userID} </h6>
+                        
+                        
+                      </div>
+                      <div class="card-action center-align">
+                        <a class="waves-effect waves-light btn indigo darken-4">${item.status}</a>
+                      </div>
 
-    
-            card.appendChild(cardContent);
-    
+                    </div>
+                  </div>
+                </div>
+                <div class="col s2"></div>
+            </div>
+          `;
+          
             // Agrega la card al contenedor en tu HTML
             const container = document.getElementById('card-container');
-            container.appendChild(card);
+            container.innerHTML += loanHTML;
           });
         }
       })
       .catch(error => {
         console.error(error);
       });
-  </script>
+
+   </script>
+    <script src="js/user.js"></script>
 </body>
 </html>

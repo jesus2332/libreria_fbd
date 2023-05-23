@@ -12,7 +12,7 @@ var loggedUserID = null;
 const dbConfig = {
   user: 'LIBRARYFCM',
   password: 'condenado',
-  connectString: 'localhost:1521/xepdb1'
+  connectString: '192.168.56.1:1521/xepdb1'
 };
 
 const templateFile = './WWW/result.html';
@@ -44,6 +44,7 @@ function generateLoanId() {
 
   return LoanID;
 }
+
 
 
 
@@ -156,14 +157,14 @@ app.get('/data/:isbn', async (req, res) => {
     res.json({
       isbn: book[0],
       pages: book[3],
-      language: book[5],
-      genre: book[6],
-      publisher: book[7],
+      language: decodeURIComponent((book[5])),
+      genre: decodeURIComponent((book[6])),
+      publisher: decodeURIComponent((book[7])),
       stock: book[4],
-      title: book[1],
+      title: decodeURIComponent((book[1])),
       year: book[2],
-      authorName: author[1],
-      authorLastName: author[2]
+      authorName: decodeURIComponent((author[1])),
+      authorLastName: decodeURIComponent((author[2]))
       
     });
   } catch (error) {
@@ -197,6 +198,7 @@ app.get('/data', async (req, res) => {
 });
 
 app.get('/userO', async (req, res) => {
+  await checkLoanStatus();
   let connection;
   const userID = loggedUserID;
   console.log(userID);
@@ -204,19 +206,20 @@ app.get('/userO', async (req, res) => {
   try {
     connection = await oracledb.getConnection(dbConfig);
 
-    const query = `SELECT DISTINCT p.PrestamoID, p.PrestamoFecha, p.PrestamoCaducidad, p.PrestamoEstatus, p.UsuarioID, p.ArticuloID, l.LibroTitulo AS LibroNombre FROM Prestamo p LEFT JOIN Articulo a ON p.ArticuloID = a.ArticuloID LEFT JOIN Libro l ON a.LibroID = l.LibroID WHERE p.UsuarioID = :userID`;
+    const query = `SELECT DISTINCT p.PrestamoID, p.PrestamoFecha, p.PrestamoCaducidad, p.PrestamoEstatus, p.UsuarioID, p.ArticuloID, l.LibroTitulo, l.libroid AS LibroNombre FROM Prestamo p LEFT JOIN Articulo a ON p.ArticuloID = a.ArticuloID LEFT JOIN Libro l ON a.LibroID = l.LibroID WHERE p.UsuarioID = :userID`;
     const result = await connection.execute(query, [userID]);
     // Transforma los resultados de la consulta en un formato adecuado
     const datos = result.rows.map(row => ({
-      prestamoID: row[0],
-      fecha: row[1],
-      caducidad: row[2],
-      estatus: row[3],
-      usuarioID: row[4],
-      articuloID: row[5],
-      tituloID: row[6]
+      loanID: row[0],
+      date: row[1],
+      expiredDate: row[2],
+      status: row[3],
+      userID: row[4],
+      articleID: row[5],
+      title: decodeURIComponent((row[6])),
+      isbn: row[7]
     }));
-    console.log(datos);
+
     res.json(datos);
   } catch (error) {
     console.error('Error al obtener datos desde OracleDB:', error);
@@ -231,6 +234,50 @@ app.get('/userO', async (req, res) => {
     }
   }
 });
+
+async function checkLoanStatus() {
+  try {
+    const connection = await oracledb.getConnection(dbConfig);
+
+    // Obtener los préstamos del usuario logeado
+    const userLoans = await connection.execute(
+      'SELECT * FROM Prestamo WHERE UsuarioID = :userID',
+      [loggedUserID]
+    );
+
+    for (const loan of userLoans.rows) {
+      const loanID = loan[0];
+      const expiredDate = new Date(loan[2]);
+      const status = loan[3];
+      console.log(expiredDate)
+
+      // Verificar si el préstamo está vencido
+      if (expiredDate < new Date() && status === 'Activo') {
+        // Actualizar el estatus del préstamo a 'multa pendiente'
+        await connection.execute(
+          'UPDATE Prestamo SET PrestamoEstatus = :status WHERE PrestamoID = :loanID',
+          ['multa pendiente', loanID]
+        );
+
+        // Crear una multa para el usuario
+        const fineID = generateLoanId();
+        const fineAmount = 100; // Monto de la multa
+        
+        const fineStatus = 'Pendiente';
+
+        await connection.execute(
+          `INSERT INTO Multa (MultaID, Monto, MultaFecha, estatus, UsuarioID)
+           VALUES (:fineID, :fineAmount, SYSDATE, :fineStatus, :userID)`,
+          [fineID, fineAmount,  fineStatus, loggedUserID]
+        );
+      }
+    }
+    await connection.commit();
+    await connection.close();
+  } catch (error) {
+    console.error(error);
+  }
+}
 
 
 
@@ -299,6 +346,7 @@ app.post('/login', async (req, res) => {
     if (result.rows.length > 0) {
       // Se encontró una coincidencia en la base de datos
       loggedUserID = result.rows[0][0];
+      
       res.send(sucessAlert);
 
     } else {
@@ -312,12 +360,14 @@ app.post('/login', async (req, res) => {
 });
 
 app.get('/multas', async (req, res) => {
+  await checkLoanStatus();
   const userID = loggedUserID; // Asegúrate de obtener el ID de usuario correctamente
+  console.log('usuario multas:', userID);
   let connection;
   try {
     const connection = await oracledb.getConnection(dbConfig);
     const result = await connection.execute(`SELECT * FROM Multa WHERE UsuarioID = :userID`, [userID]);
-    console.log(result.rows);
+    console.log('Aqui las multas: ', result.rows);
     const noMulta = `
     <script>
       alert('Usted no cuenta con multas');
@@ -326,13 +376,12 @@ app.get('/multas', async (req, res) => {
     `;
     if (result.rows.length > 0) {
       const datos = result.rows.map(row => ({
-        multaID: row[0],
-        monto: row[1],
-        multaFecha: row[2],
-        estatus: row[3],
-        usuarioID: row[4],
+        fineID: row[0],
+        amount: row[1],
+        fineDate: row[2],
+        status: row[3],
+        userID: row[4],
       }));
-      console.log(datos);
       res.json(datos);
     } else {
       res.send(noMulta);
@@ -350,6 +399,7 @@ app.get('/multas', async (req, res) => {
     }
   }
 });
+
 
 app.post('/order', async (req, res) => {
   prestamoID = generateLoanId();
@@ -374,14 +424,15 @@ app.post('/order', async (req, res) => {
     await connection.close();
 
     if(result.rows[0] == undefined){
-      console.log("Ya no hay stock  disponible")
+      throw new Error("Ya no hay stock  disponible");
     }
     else{
+    
       articuloID = result.rows[0][0];
       const connection = await oracledb.getConnection(dbConfig);
       const loan = await connection.execute(
         `INSERT INTO Prestamo (PrestamoID, PrestamoFecha, PrestamoCaducidad, PrestamoEstatus, UsuarioID, ArticuloID)
-          VALUES (:prestamoid, SYSDATE, SYSDATE+7, 'Activo', :userID, :articuloID)`,
+          VALUES (:prestamoid, SYSDATE, SYSDATE + INTERVAL '5' MINUTE, 'Activo', :userID, :articuloID)`,
         [prestamoID, userID, articuloID]
       );
       const minusStock = await connection.execute(
@@ -391,13 +442,13 @@ app.post('/order', async (req, res) => {
       await connection.commit();
       await connection.close();
       console.log("Prestamo registrado exitosamente");
+      res.sendStatus(200);
     }
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Error al registrar el prestamo' });
   }
 });
-
 
 
 
@@ -409,9 +460,6 @@ app.get('/logout', (req, res) => {
   loggedUserID = null;
   res.redirect('/index.html');
 });
-
-//proteger mis rutas books.html userOrders.html bookPage.html si el loggedUserID es null, es decir, si no hay un usuario logeado en el sistema entonces redirigir a index.html
-
 
 
 app.use(express.static('WWW'));

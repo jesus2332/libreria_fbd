@@ -28,6 +28,15 @@
             <div class="logo-container2">
                 <a href="books.html"><img src="img/logo.png"  class="hoverable" alt=""></a>
             </div>
+            <div class="row">
+              
+                <a href="multas.html" class=" waves-effect waves-light btn-large">Ir a Multas</a>
+
+         
+              
+
+            </div>
+
         </div>
         <div class="col s10">
             <div class="order-text">
@@ -38,99 +47,59 @@
     </div>
 
     <div class="row">
-        <div class="container">
-
-            <div class="row ">
-                <div class="col s2"></div>
-                <div class="col s8">
-                  <div class="card horizontal small hoverable">
-                    <div class="card-image">
-                        <img src="https://covers.openlibrary.org/b/isbn/9788499899688-L.jpg ">
-                    </div>
-                    <div class="card-stacked">
-                      <div class="card-content center">
-                        <h5>The pale king</h5>
-                        <br>
-                        <h6>Pedido realizado el: </h6>
-                        <br>
-                        <h6>Fecha de devolución limite: </h6>
-                      </div>
-                      <div class="card-action center-align">
-                        <a class=" btn red darken-4">En posesion</a>
-                      </div>
-
-                    </div>
-                  </div>
-                </div>
-                <div class="col s2"></div>
+        <div class="container ">
+          <div class="cards-container">
+            <div id="card-container">
             </div>
-              
-            
-              <div class="row ">
-                <div class="col s2"></div>
-                <div class="col s8">
-                  <div class="card horizontal small hoverable">
-                    <div class="card-image">
-                        <img src="https://covers.openlibrary.org/b/isbn/9788499899688-L.jpg ">
-                    </div>
-                    <div class="card-stacked">
-                      <div class="card-content center">
-                        <h5>The pale king</h5>
-                        <br>
-                        <h6>Pedido realizado el: </h6>
-                        <br>
-                        <h6>Fecha de devolución limite: </h6>
-                      </div>
-                      <div class="card-action center-align">
-                        <a class=" btn green"> <i class="material-icons right">check</i>Entregado</a>
-                      </div>
-
-                    </div>
-                  </div>
-                </div>
-                <div class="col s2"></div>
-            </div>
-              
-
-            <div class="row ">
-                <div class="col s2"></div>
-                <div class="col s8">
-                  <div class="card horizontal small hoverable">
-                    <div class="card-image">
-                        <img src="https://covers.openlibrary.org/b/isbn/9788499899688-L.jpg ">
-                    </div>
-                    <div class="card-stacked">
-                      <div class="card-content center">
-                        <h5>The pale king</h5>
-                        <br>
-                        <h6>Pedido realizado el: </h6>
-                        <br>
-                        <h6>Fecha de devolución limite: </h6>
-                      </div>
-                      <div class="card-action center-align">
-                        <a class="waves-effect waves-light btn indigo darken-4 pulse">Multa pendiente</a>
-                      </div>
-
-                    </div>
-                  </div>
-                </div>
-                <div class="col s2"></div>
-            </div>
-
-
-
-
-              
-
-
-
-
-
+          </div>
         </div>
-
-        
     </div>
-   
+
+    
+   <script>
+    fetch('/userO')
+  .then(response => response.json())
+  .then(data => {
+    data.forEach(item => {
+
+      html = `
+      <div class="row ">
+                <div class="col s2"></div>
+                <div class="col s8">
+                  <div class="card horizontal small hoverable">
+                    <div class="card-image">
+                        <img src="https://covers.openlibrary.org/b/isbn/${item.isbn}-L.jpg ">
+                    </div>
+                    <div class="card-stacked">
+                      <div class="card-content center">
+                        <h5>${item.title}</h5>
+                        
+                        <h6>Id de prestamo: ${item.loanID} </h6>
+                        <h6>Pedido realizado el: ${item.date} </h6>
+                        <h6>Fecha de devolución limite: ${item.expiredDate} </h6>
+                        
+                        
+                      </div>
+                      <div class="card-action center-align">
+                        <a class=" btn red darken-4">${item.status}</a>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+                <div class="col s2"></div>
+            </div>
+          `;
+
+      const contaniner = document.getElementById('card-container');
+      contaniner.innerHTML += html;
+    });
+  })
+  .catch(error => {
+    console.error(error);
+  });
+
+   </script>
     <script src="js/user.js"></script>
 </body>
 </html>
