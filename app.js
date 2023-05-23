@@ -12,7 +12,7 @@ var loggedUserID = null;
 const dbConfig = {
   user: 'LIBRARYFCM',
   password: 'condenado',
-  connectString: '192.168.56.1:1521/xepdb1'
+  connectString: 'localhost:1521/xepdb1'
 };
 
 const templateFile = './WWW/result.html';
@@ -196,6 +196,43 @@ app.get('/data', async (req, res) => {
   }
 });
 
+app.get('/userO', async (req, res) => {
+  let connection;
+  const userID = loggedUserID;
+  console.log(userID);
+
+  try {
+    connection = await oracledb.getConnection(dbConfig);
+
+    const query = `SELECT DISTINCT p.PrestamoID, p.PrestamoFecha, p.PrestamoCaducidad, p.PrestamoEstatus, p.UsuarioID, p.ArticuloID, l.LibroTitulo AS LibroNombre FROM Prestamo p LEFT JOIN Articulo a ON p.ArticuloID = a.ArticuloID LEFT JOIN Libro l ON a.LibroID = l.LibroID WHERE p.UsuarioID = :userID`;
+    const result = await connection.execute(query, [userID]);
+    // Transforma los resultados de la consulta en un formato adecuado
+    const datos = result.rows.map(row => ({
+      prestamoID: row[0],
+      fecha: row[1],
+      caducidad: row[2],
+      estatus: row[3],
+      usuarioID: row[4],
+      articuloID: row[5],
+      tituloID: row[6]
+    }));
+    console.log(datos);
+    res.json(datos);
+  } catch (error) {
+    console.error('Error al obtener datos desde OracleDB:', error);
+    res.status(500).json({ error: 'Error al obtener datos' });
+  } finally {
+    if (connection) {
+      try {
+        await connection.close();
+      } catch (error) {
+        console.error('Error al cerrar la conexión:', error);
+      }
+    }
+  }
+});
+
+
 
 
 
@@ -274,8 +311,45 @@ app.post('/login', async (req, res) => {
   }
 });
 
-
-
+app.get('/multas', async (req, res) => {
+  const userID = loggedUserID; // Asegúrate de obtener el ID de usuario correctamente
+  let connection;
+  try {
+    const connection = await oracledb.getConnection(dbConfig);
+    const result = await connection.execute(`SELECT * FROM Multa WHERE UsuarioID = :userID`, [userID]);
+    console.log(result.rows);
+    const noMulta = `
+    <script>
+      alert('Usted no cuenta con multas');
+      window.history.back();
+    </script>
+    `;
+    if (result.rows.length > 0) {
+      const datos = result.rows.map(row => ({
+        multaID: row[0],
+        monto: row[1],
+        multaFecha: row[2],
+        estatus: row[3],
+        usuarioID: row[4],
+      }));
+      console.log(datos);
+      res.json(datos);
+    } else {
+      res.send(noMulta);
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error al comparar los datos con la base de datos' });
+  } finally {
+    if (connection) {
+      try {
+        await connection.close();
+      } catch (error) {
+        console.error('Error al cerrar la conexión:', error);
+      }
+    }
+  }
+});
 
 app.post('/order', async (req, res) => {
   prestamoID = generateLoanId();
@@ -325,10 +399,7 @@ app.post('/order', async (req, res) => {
 });
 
 
-  
 
-
-    
 
 app.get('/loggedUserID', (req, res) => {
   res.json({ loggedUserID });

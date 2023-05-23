@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Generación de Cards</title>
+  <style>
+    .card {
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 10px;
+      margin-bottom: 10px;
+      background-color: #fff;
+      box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-content {
+      margin-top: 10px;
+    }
+
+    p {
+      margin: 5px 0;
+    }
+  </style>
+</head>
+<body>
+  <div id="card-container"></div>
+
+  <button onclick="goToIndex()">Regresar a la pagina de inicio</button>
+
+  <button id="multas-button">Ir a Multas</button>
+
+  <script>
+
+    function goToIndex() {
+      window.location.href = 'books.html';
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const multasButton = document.getElementById('multas-button');
+        multasButton.addEventListener('click', () => {
+            window.location.href = "multas.html";
+        });
+    });
+
+
+    fetch('/userO')
+      .then(response => response.json())
+      .then(data => {
+        data.forEach(item => {
+          const card = document.createElement('div');
+          card.className = 'card';
+  
+          const cardContent = document.createElement('div');
+          cardContent.className = 'card-content';
+  
+          const titulo = document.createElement('p');
+          titulo.textContent = `Titulo: ${item.tituloID}`;
+  
+          const prestamoID = document.createElement('p');
+          prestamoID.textContent = `Prestamo ID: ${item.prestamoID}`;
+  
+          const fecha = document.createElement('p');
+          fecha.textContent = `Fecha: ${item.fecha}`;
+  
+          const caducidad = document.createElement('p');
+          caducidad.textContent = `Caducidad: ${item.caducidad}`;
+  
+          const estatus = document.createElement('p');
+          estatus.textContent = `Estatus: ${item.estatus}`;
+  
+          const usuarioID = document.createElement('p');
+          usuarioID.textContent = `Usuario ID: ${item.usuarioID}`;
+  
+          const articuloID = document.createElement('p');
+          articuloID.textContent = `Articulo ID: ${item.articuloID}`;
+  
+          cardContent.appendChild(prestamoID);
+          cardContent.appendChild(fecha);
+          cardContent.appendChild(caducidad);
+          cardContent.appendChild(estatus);
+          cardContent.appendChild(usuarioID);
+          cardContent.appendChild(articuloID);
+          cardContent.appendChild(titulo);
+  
+          card.appendChild(cardContent);
+  
+          // Agrega la card al contenedor en tu HTML
+          const container = document.getElementById('card-container');
+          container.appendChild(card);
+        });
+      })
+      .catch(error => {
+        console.error(error);
+      });
+
+
+  </script> 
+
+  <script src="js/user.js"></script>
+
+  
+</body>
+</html>
